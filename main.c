@@ -19,7 +19,8 @@ int main(void){
     }
 
 
-    while(true){
+    while(continueGame(dashedWord ,&size, &attempts)){
+        clear_screen();
 
         mainFrame(dashedWord, alreadyTypedChars, attempts);
         putchar('\n');
