@@ -6,8 +6,3 @@ bool validateInput(int* character);
 void mainFrame(char wordToGuess[], char alreadyTypedChars[], int attempts);
 bool continueGame(char wordToGuess[],int* size, int* attempts);
 void clear_screen(void);
-
-typedef struct {
-    char* msg;
-
-}Result;
