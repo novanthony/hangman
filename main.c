@@ -4,29 +4,45 @@
 
 #include "./hangman.h"
 
+#define MAX_CHARS 26
+
 int main(void){
 
     char* word = "hello";
     int size = strlen(word);
     char dashedWord[size];
+    char alreadyTypedChars[MAX_CHARS] = {'\0'};
+    int attempts = 0;
 
     for(int i = 0; i < strlen(word); i++){
         dashedWord[i] = '_';
     }
 
+
     while(true){
+
+        mainFrame(dashedWord, alreadyTypedChars, attempts);
+        putchar('\n');
+
+
 
         printf("Insert a character: ");
         int character = getchar();
         clearInputBuffer();
-        if(!validateInput(&character)){
+        if(validateInput(&character)){
+            for(int i = 0; i < MAX_CHARS; i++){
+                if(alreadyTypedChars[i] == '\0'){
+                    alreadyTypedChars[i] = character;
+                    break;
+                }
+            }
+        } else {
             continue;
         }
         if(updateWord(&character, dashedWord, &size, word) == 0){
+            attempts += 1;
             continue;
         }
-
-        printf("\n\n%s\n", dashedWord);
     }
 
     return 0;
