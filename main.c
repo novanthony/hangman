@@ -46,5 +46,7 @@ int main(void){
         }
     }
 
+    clear_screen();
+    mainFrame(dashedWord, alreadyTypedChars, attempts);
     return 0;
 }

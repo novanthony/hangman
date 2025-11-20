@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define MAX_ATTEMPTS 5
+
 void clearInputBuffer(void){
     int c = getchar();
     while(c != '\n'){
@@ -22,9 +24,9 @@ bool validateInput(char* character){
 
     if(*character >= 97 && *character <= 122){
         return true;
-    } else {
-        return false;
+
     }
+    return false;
 }
 
 int updateWord(int* character, char wordToGuess[], int* size, char* word){
@@ -39,7 +41,18 @@ int updateWord(int* character, char wordToGuess[], int* size, char* word){
 }
 
 void mainFrame(char wordToGuess[], char alreadyTypedChars[], int attempts){
+
+    const char *HANGMANPICS[7] = {
+            "  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========",
+            "  +---+\n  |   |\n  O   |\n      |\n      |\n      |\n=========",
+            "  +---+\n  |   |\n  O   |\n  |   |\n      |\n      |\n=========",
+            "  +---+\n  |   |\n  O   |\n /|   |\n      |\n      |\n=========",
+            "  +---+\n  |   |\n  O   |\n /|\\  |\n      |\n      |\n=========",
+            "  +---+\n  |   |\n  O   |\n /|\\  |\n /    |\n      |\n=========",
+            "  +---+\n  |   |\n  O   |\n /|\\  |\n / \\  |\n      |\n========="};
+
     printf("Attempts: %d\n", attempts);
+    printf("%s",    HANGMANPICS[attempts]);
     printf("Already typed chars: ");
     for(int i = 0; alreadyTypedChars[i] != '\0'; i++){
         printf("%c, ", alreadyTypedChars[i]);
@@ -58,7 +71,7 @@ bool continueGame(char wordToGuess[], int* size, int* attempts){
     }
 
 
-    if(*attempts <= 5 && dashInWord){
+    if(*attempts < MAX_ATTEMPTS && dashInWord){
         return true;
     }
     return false;
