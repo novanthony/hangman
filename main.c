@@ -1,6 +1,8 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 #include "./hangman.h"
 
@@ -31,6 +33,13 @@ int main(void){
         int character = getchar();
         clearInputBuffer();
         if(validateInput(&character)){
+            character = tolower(character);
+            if(checkAlreadyEnteredChars(alreadyTypedChars, &size, &character)){
+                printf("\nWARNING: You already typed this character.\n");
+                sleep(3);
+                continue;
+
+            }
             for(int i = 0; i < MAX_CHARS; i++){
                 if(alreadyTypedChars[i] == '\0'){
                     alreadyTypedChars[i] = character;
@@ -38,10 +47,14 @@ int main(void){
                 }
             }
         } else {
+            printf("\nWARNING: Invalid input.\n");
+            sleep(3);
             continue;
         }
         if(updateWord(&character, dashedWord, &size, word) == 0){
             attempts += 1;
+            printf("\nWARNING: The character isn't in the word to guess.\n");
+            sleep(3);
             continue;
         }
     }

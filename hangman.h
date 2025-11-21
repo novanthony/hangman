@@ -6,3 +6,5 @@ bool validateInput(int* character);
 void mainFrame(char wordToGuess[], char alreadyTypedChars[], int attempts);
 bool continueGame(char wordToGuess[],int* size, int* attempts);
 void clear_screen(void);
+bool checkAlreadyEnteredChars(char alreadyEnteredChars[], int* size, int* character);
+char* takeWord(void);
