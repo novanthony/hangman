@@ -6,6 +6,8 @@
 #include <unistd.h>
 #include <time.h>
 
+#define MAX_WORD_LENGTH 1024
+
 #include "hangman.h"
 
 void clearInputBuffer(void){
@@ -30,10 +32,6 @@ bool checkAlreadyEnteredChars(char alreadyEnteredChars[], int* character){
 bool validateInput(int* character){
     if(*character >= 'A' && *character <= 'Z'){
         return true;
-    }
-
-    if(*character == EOF){
-        exit(EXIT_FAILURE);
     }
 
     if(*character >= 'a' && *character <= 'z'){
@@ -89,6 +87,7 @@ bool continueGame(char wordToGuess[], int* size, int* attempts){
     if(*attempts < MAX_ATTEMPTS && dashInWord){
         return true;
     }
+
     return false;
 }
 
@@ -104,36 +103,39 @@ void clear_screen(void){
 
 char* takeWord(void){
     FILE *fp;
-    static char word[1024];
+    static char word[MAX_WORD_LENGTH];
     int lineCount = 0;
 
-    // count words in the wordlist.txt file
     fp = fopen("./wordlist.txt", "r");
     if(fp == NULL){
-        printf("Some errors eccoured with I/O file.");
-        sleep(2);
-        exit(EXIT_FAILURE);
-    } else {
-        while(fgets(word, sizeof word, fp) != NULL){
-            lineCount++;
-        }
+        goto file_error;
     }
+
+    // count words in the wordlist.txt file
+    while(fgets(word, sizeof word, fp) != NULL){
+        lineCount++;
+    }
+
     rewind(fp);
 
-    // Copy the words from the file to the array
-    char wordList[lineCount][1024];
-    if(fp == NULL){
-        printf("Some errors eccoured with I/O file.");
-        sleep(2);
-        exit(EXIT_FAILURE);
-    } else {
-        int i = 0;
-        while(fgets(word, sizeof word, fp) != NULL && i < lineCount){
-            word[strcspn(word, "\n")] = '\0';
-            word[0] = tolower(word[0]);
-            strcpy(wordList[i], word);
-            i++;
+    if(ferror(fp)){
+        fclose(fp);
+        goto file_error;
+    }
+
+    // Dynamic allocation sice it's illegal jump on the label if I have a VLA
+    char (*wordList)[MAX_WORD_LENGTH] = malloc(lineCount * MAX_WORD_LENGTH);
+    if(!wordList){
+        fclose(fp);
+        fputs("\nMemory allocation for the wordlist failed.\n", stderr);
+        return NULL;
         }
+
+    // Copy the words from the file to the array
+    for(int i = 0; fgets(word, sizeof word, fp) != NULL && i < lineCount; i++){
+        word[strcspn(word, "\n")] = '\0';
+        word[0] = tolower(word[0]);
+        strcpy(wordList[i], word);
     }
     fclose(fp);
 
@@ -141,5 +143,10 @@ char* takeWord(void){
     srand(time(0));
     int choice = rand() % lineCount;
     strcpy(word, wordList[choice]);
+    free(wordList);
     return word;
+
+    file_error:
+        fputs("\nSome errors eccoured with I/O file.\n", stderr);
+        return NULL;
 }

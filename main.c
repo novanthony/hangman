@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "./hangman.h"
@@ -11,6 +12,9 @@
 int main(void){
 
     char* word = takeWord();
+    if(word == NULL){
+        return -1;
+    }
     int size = strlen(word);
     char dashedWord[size];
     dashedWord[size] = '\0';
@@ -29,6 +33,10 @@ int main(void){
 
         printf("Insert a character: ");
         int character = getchar();
+        if(character == EOF){
+            fputs("\nReached EOF(End Of File).\n", stderr);
+            return -1;
+        }
         clearInputBuffer();
         if(validateInput(&character)){
             character = tolower(character);
