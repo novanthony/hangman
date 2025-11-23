@@ -11,15 +11,13 @@
 int main(void){
 
     char* word = takeWord();
-    printf("The word is: %s\n", word);
-    sleep(3);
     int size = strlen(word);
     char dashedWord[size];
     dashedWord[size] = '\0';
     char alreadyTypedChars[MAX_CHARS] = {'\0'};
     int attempts = 0;
 
-    for(int i = 0; i < strlen(word); i++){
+    for(unsigned long i = 0; i < strlen(word); i++){
         dashedWord[i] = '_';
     }
 
@@ -36,7 +34,7 @@ int main(void){
             character = tolower(character);
             if(checkAlreadyEnteredChars(alreadyTypedChars, &character)){
                 printf("\nWARNING: You already typed this character.\n");
-                sleep(3);
+                sleep(2);
                 continue;
             }
             for(int i = 0; i < MAX_CHARS; i++){
@@ -47,13 +45,13 @@ int main(void){
             }
         } else {
             printf("\nWARNING: Invalid input.\n");
-            sleep(3);
+            sleep(2);
             continue;
         }
         if(updateWord(&character, dashedWord, &size, word) == 0){
             attempts += 1;
             printf("\nWARNING: The character isn't in the word to guess.\n");
-            sleep(3);
+            sleep(2);
             continue;
         }
     }
@@ -71,7 +69,8 @@ int main(void){
         printf("   Y     O   O   U   U        L      O   O      S    T   \n");
         printf("   Y      OOO     UUU         LLLLL   OOO    SSS     T   \n");
         printf("=========================================================\n");
-        printf("                 YOU LOST\n");
+        printf("                      YOU LOST\n");
+        putchar('\n');
 
 
     } else {
@@ -83,8 +82,8 @@ int main(void){
         printf("   Y     O   O   U   U        WW WW   O   O   N  NN \n");
         printf("   Y      OOO     UUU         W   W    OOO    N   N \n");
         printf("====================================================\n");
-        printf("                  YOU WON!\n");
-
+        printf("                     YOU WON!\n");
+        putchar('\n');
     }
     return 0;
 }
