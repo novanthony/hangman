@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
@@ -13,7 +14,7 @@ int main(void){
 
     char* word = takeWord();
     if(word == NULL){
-        return -1;
+        return EXIT_FAILURE;
     }
     int size = strlen(word);
     char dashedWord[size];
@@ -32,12 +33,13 @@ int main(void){
         putchar('\n');
 
         printf("Insert a character: ");
+
         int character = getchar();
-        if(character == EOF){
-            fputs("\nReached EOF(End Of File).\n", stderr);
-            return -1;
-        }
-        clearInputBuffer();
+        if(character == EOF) goto eof_error;
+
+        int status = clearInputBuffer();
+        if(status == EOF) goto eof_error;
+
         if(validateInput(&character)){
             character = tolower(character);
             if(checkAlreadyEnteredChars(alreadyTypedChars, &character)){
@@ -93,5 +95,9 @@ int main(void){
         printf("                     YOU WON!\n");
         putchar('\n');
     }
-    return 0;
+    return EXIT_SUCCESS;
+
+    eof_error:
+        fputs("\nReached EOF(End Of File).\n", stderr);
+        return EXIT_FAILURE;
 }

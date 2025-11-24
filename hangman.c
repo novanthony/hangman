@@ -10,14 +10,15 @@
 
 #include "hangman.h"
 
-void clearInputBuffer(void){
+int clearInputBuffer(void){
     int c = getchar();
     while(c != '\n'){
         if(c == EOF){
-            exit(EXIT_FAILURE);
+            return c;
         }
         c = getchar();
     }
+    return 0;
 }
 
 bool checkAlreadyEnteredChars(char alreadyEnteredChars[], int* character){
