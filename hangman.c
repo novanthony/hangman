@@ -93,13 +93,7 @@ bool continueGame(char wordToGuess[], int* size, int* attempts){
 }
 
 void clear_screen(void){
-    //printf("\033[2J\033[H"); // It keeps the previous frame if scroll up the terminal on linux
-    #ifdef _WIN32
-        system("cls");  // Windows
-    #else
-        // It appends clear command on history...
-        system("clear");  // Linux
-    #endif
+    printf("\033[2J\033[3J\033[H");
 }
 
 char* takeWord(void){
